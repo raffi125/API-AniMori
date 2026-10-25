@@ -1,4 +1,4 @@
-import axios from 'axios';
+import http from './http.js';
 import episodes from './episodes.js';
 import scrapeEpisode from '../lib/scrapeEpisode.js';
 import { filterStreamsByTier, resolveStreams } from '../lib/resolveStreams.js';
@@ -16,7 +16,7 @@ const episode = async ({ episodeSlug, animeSlug, episodeNumber, premium = false 
         const firstEpisodeNumber = splittedEpisodeSlug[1].replace('-sub-indo', '');
         slug = `${prefixEpisodeSlug}-episode-${episodeNumber - (parseInt(firstEpisodeNumber) == 0 ? 1 : 0)}-sub-indo`;
     }
-    const { data } = await axios.get(`${BASEURL}/episode/${slug}`);
+    const { data } = await http.get(`${BASEURL}/episode/${slug}`);
     const result = scrapeEpisode(data);
     if (!result)
         return undefined;

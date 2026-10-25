@@ -1,4 +1,4 @@
-import axios from 'axios';
+import http from '../utils/http.js';
 
 export type Stream = {
   quality: string;
@@ -64,7 +64,7 @@ const extractFromHtml = (html: string): { url: string; type: 'hls' | 'mp4' }[] =
 
 const safeFetch = async (url: string): Promise<string | undefined> => {
   try {
-    const { data, headers } = await axios.get(url, {
+    const { data, headers } = await http.get(url, {
       timeout: 15000,
       responseType: 'text',
       maxRedirects: 5,

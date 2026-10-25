@@ -1,4 +1,4 @@
-import axios from 'axios';
+import http from '../utils/http.js';
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36';
 const QUALITY_ORDER = {
     '4k': 2160,
@@ -52,7 +52,7 @@ const extractFromHtml = (html) => {
 };
 const safeFetch = async (url) => {
     try {
-        const { data, headers } = await axios.get(url, {
+        const { data, headers } = await http.get(url, {
             timeout: 15000,
             responseType: 'text',
             maxRedirects: 5,
