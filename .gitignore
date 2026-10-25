@@ -1,5 +1,5 @@
-node_modules/
-dist/
-*.html
+node_modules/dist/*.html
 tes.ts
 .env
+data/
+node_modules

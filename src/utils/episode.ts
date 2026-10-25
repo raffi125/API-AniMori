@@ -1,10 +1,11 @@
 import axios from 'axios';
 import episodes from './episodes.js';
 import scrapeEpisode from '../lib/scrapeEpisode.js';
+import { filterStreamsByTier, resolveStreams } from '../lib/resolveStreams.js';
 
 const { BASEURL } = process.env;
-const episode = async ({ episodeSlug, animeSlug, episodeNumber }: {
-  episodeSlug?: string | undefined, animeSlug?: string | undefined, episodeNumber?: number | undefined
+const episode = async ({ episodeSlug, animeSlug, episodeNumber, premium = false }: {
+  episodeSlug?: string | undefined, animeSlug?: string | undefined, episodeNumber?: number | undefined, premium?: boolean
 }) => {
   let slug = '';
 
@@ -22,8 +23,16 @@ const episode = async ({ episodeSlug, animeSlug, episodeNumber }: {
 
   const { data } = await axios.get(`${BASEURL}/episode/${slug}`);
   const result = scrapeEpisode(data);
+  if (!result) return undefined;
 
-  return result;
+  const resolved = await resolveStreams(result.stream_url, result.download_urls?.mp4);
+  const { streams, premiumRequired } = filterStreamsByTier(resolved, premium);
+
+  return {
+    ...result,
+    streams,
+    premium_required: premiumRequired,
+  };
 };
 
 export default episode;

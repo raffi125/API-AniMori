@@ -68,6 +68,13 @@ type episode_list = {
   otakudesu_url: string | undefined
 };
 
+type stream = {
+  quality: string;
+  label: string;
+  url: string;
+  type: 'hls' | 'mp4' | 'embed';
+};
+
 type episode = {
   episode: string;
   anime: {
@@ -85,6 +92,8 @@ type episode = {
     otakudesu_url: string | undefined;
   } | null;
   stream_url: string | undefined;
+  streams: stream[];
+  premium_required: boolean;
   download_urls: {
     mp4: {
       resolution: string | undefined;
@@ -123,5 +132,6 @@ export {
   genre,
   episode_list,
   episode,
+  stream,
   batch
 };

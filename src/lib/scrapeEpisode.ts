@@ -2,7 +2,7 @@ import { load, CheerioAPI } from 'cheerio';
 import type { episode as episodeType } from '../types/types.js';
 
 const { BASEURL } = process.env;
-const scrapeEpisode = (html: string): episodeType | undefined => {
+const scrapeEpisode = (html: string): Omit<episodeType, 'streams' | 'premium_required'> | undefined => {
   const $ = load(html);
   const episode = getEpisodeTitle($);
   const stream_url = getStreamUrl($);

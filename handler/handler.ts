@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import otakudesu from '../src/otakudesu.js';
+import { isPremium } from '../src/license/store.js';
 import type {
   anime as animeType,
   ongoingAnime,
@@ -7,6 +8,12 @@ import type {
   episode_list,
   searchResultAnime
 } from '../src/types/types.js';
+
+const requestIsPremium = (req: Request): boolean => {
+  const license = typeof req.query.license === 'string' ? req.query.license : undefined;
+  const device = typeof req.query.device === 'string' ? req.query.device : undefined;
+  return isPremium(license, device);
+};
 
 const searchAnimeHandler = async (req: Request, res: Response) => {
   const { keyword } = req.params;
@@ -109,7 +116,7 @@ const episodeByEpisodeSlugHandler = async (req: Request, res: Response) => {
 
   let data;
   try {
-    data = await otakudesu.episode({ episodeSlug:  slug });
+    data = await otakudesu.episode({ episodeSlug:  slug, premium: requestIsPremium(req) });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ status: 'Ok', message: 'Internal server error' });
@@ -126,7 +133,7 @@ const episodeByEpisodeNumberHandler = async (req: Request, res: Response) => {
 
   let data;
   try {
-    data = await otakudesu.episode({ animeSlug, episodeNumber: parseInt(episode) });
+    data = await otakudesu.episode({ animeSlug, episodeNumber: parseInt(episode), premium: requestIsPremium(req) });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ status: 'Error', message: 'Internal server error' });
